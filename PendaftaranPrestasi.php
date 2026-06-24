@@ -3,22 +3,20 @@ require_once 'pendaftaran.php';
 
 // SUBCLASS: PendaftaranPrestasi
 class PendaftaranPrestasi extends Pendaftaran {
-    // Properti Tambahan Spesifik Anak (Private)
+    // Properti Spesifik Anak (Private)
     private $jenisPrestasi;
     private $tingkatPrestasi;
 
     public function __construct($dataRow) {
         parent::__construct($dataRow);
         
-        // Pemetaan atribut spesifik dari kolom database
+        // Petakan data spesifik prestasi dari kolom database
         $this->jenisPrestasi   = isset($dataRow['jenis_prestasi']) ? $dataRow['jenis_prestasi'] : '-';
         $this->tingkatPrestasi = isset($dataRow['tingkat_prestasi']) ? $dataRow['tingkat_prestasi'] : '-';
     }
 
     /**
      * Metode Query Spesifik untuk Jalur Prestasi
-     * @param mysqli $db - Objek koneksi database
-     * @return array - Kumpulan objek PendaftaranPrestasi
      */
     public static function getDaftarPrestasi($db) {
         $query = "SELECT * FROM tabel_pendaftaran WHERE jalur_pendaftaran = 'Prestasi'";
@@ -33,12 +31,18 @@ class PendaftaranPrestasi extends Pendaftaran {
         return $kumpulanObjek;
     }
 
-    // Mengimplementasikan abstract method untuk menghitung biaya
+    /**
+     * [Tahap 5] Overriding: Menghitung total biaya untuk Jalur Prestasi
+     * Total Biaya = biayaPendaftaranDasar - 50000
+     */
     public function hitungTotalBiaya() {
-        return $this->biayaPendaftaranDasar;
+        $total = $this->biayaPendaftaranDasar - 50000;
+        return $total > 0 ? $total : 0; // Mencegah nilai minus jika biaya dasar di bawah 50rb
     }
 
-    // Mengimplementasikan abstract method untuk menampilkan info unik
+    /**
+     * Overriding: Menampilkan karakteristik spesifik jalur Prestasi
+     */
     public function tampilkanInfoJalur() {
         echo "<strong>— Karakteristik Jalur Prestasi —</strong><br>";
         echo "Jenis Prestasi  : " . $this->jenisPrestasi . "<br>";

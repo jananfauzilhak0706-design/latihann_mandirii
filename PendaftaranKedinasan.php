@@ -3,22 +3,20 @@ require_once 'pendaftaran.php';
 
 // SUBCLASS: PendaftaranKedinasan
 class PendaftaranKedinasan extends Pendaftaran {
-    // Properti Tambahan Spesifik Anak (Private)
+    // Properti Spesifik Anak (Private)
     private $skIkatanDinas;
     private $instansiSponsor;
 
     public function __construct($dataRow) {
         parent::__construct($dataRow);
         
-        // Pemetaan atribut spesifik dari kolom database
+        // Petakan data spesifik kedinasan dari kolom database
         $this->skIkatanDinas   = isset($dataRow['sk_ikatan_dinas']) ? $dataRow['sk_ikatan_dinas'] : '-';
         $this->instansiSponsor = isset($dataRow['instansi_sponsor']) ? $dataRow['instansi_sponsor'] : '-';
     }
 
     /**
      * Metode Query Spesifik untuk Jalur Kedinasan
-     * @param mysqli $db - Objek koneksi database
-     * @return array - Kumpulan objek PendaftaranKedinasan
      */
     public static function getDaftarKedinasan($db) {
         $query = "SELECT * FROM tabel_pendaftaran WHERE jalur_pendaftaran = 'Kedinasan'";
@@ -33,12 +31,17 @@ class PendaftaranKedinasan extends Pendaftaran {
         return $kumpulanObjek;
     }
 
-    // Mengimplementasikan abstract method untuk menghitung biaya
+    /**
+     * [Tahap 5] Overriding: Menghitung total biaya untuk Jalur Kedinasan
+     * Total Biaya = biayaPendaftaranDasar * 1.25
+     */
     public function hitungTotalBiaya() {
-        return $this->biayaPendaftaranDasar;
+        return $this->biayaPendaftaranDasar * 1.25;
     }
 
-    // Mengimplementasikan abstract method untuk menampilkan info unik
+    /**
+     * Overriding: Menampilkan karakteristik spesifik jalur Kedinasan
+     */
     public function tampilkanInfoJalur() {
         echo "<strong>— Karakteristik Jalur Kedinasan —</strong><br>";
         echo "Nomor SK Dinas  : " . $this->skIkatanDinas . "<br>";
